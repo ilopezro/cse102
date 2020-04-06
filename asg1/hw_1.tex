@@ -1,0 +1,233 @@
+\documentclass[11pt]{article}
+\usepackage{fullpage,amsthm,amsfonts,amssymb,epsfig,amsmath,times,amsthm}
+\usepackage{algpseudocode}
+
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem*{solution}{Solution}
+
+\begin{document}
+% PUT YOUR INFORMATION IN THESE TWO LINES 
+\hfill FirstName  LastName  
+
+\hfill StudentID, acct@ucsc.edu
+
+\begin{center}
+{\bf\Large 
+CMPS 102 --- Spring 2020 --  Homework 1 }
+\end{center}
+
+\begin{center}
+Updated Ver. 3(04-05)\\
+Four problems, 25 points, due Friday April 10 (11:59 PM) on Gradescope. 
+\end{center}
+
+%\newcommand{\set}[1]{\{ #1 \}}
+%\newcommand{\qed}{ \large \hfill $\Box$ \\ \medskip }
+%\newcommand{\qedq}{ \large \hfill $\Box$?? \\ \medskip }
+
+\renewcommand{\P}{\mbox{IH}}
+Before you begin the assignment, please read the following carefully.
+\begin{itemize}
+    \item Read the \emph{Homework Guidelines}.
+    \item Every part of each question begins on a new page. Do not change this.
+    \item This does not mean that you should write a full page for every question. Your answers should be short and precise. Lengthy and wordy answers will lose points.
+    \item Do not change the format of this document. Simply type your answers as directed.
+    \item You are \textbf{not} allowed to work in teams.
+\end{itemize}
+%Complete the following.
+\emph{I have read and agree to the collaboration policy.}  -- FirstName LastName, email@ucsc.edu
+% replacing "FirstName LastName, email@ucsc.edu" with your information.
+\\
+Collaborators: %write the name of the collaborators. If you worked by yourself, please write 'none'.
+\\
+\hrule
+\begin{enumerate}
+\item (Total: 8 pts) A grad student comes up with the following algorithm to sort an array $A[1..n]$ that works by first sorting the first 2/3rds of the array, then sorting the last 2/3rds of the (resulting) array,
+and finally sorting the first 2/3rds of the new array.
+
+\begin{algorithmic}[1]
+\Function{G-sort}{$A$, $n$} \Comment {takes as input an array of $n$ numbers, $A[1..n]$}
+	\State G-sort-recurse($A$, 1, $n$)
+\EndFunction
+
+ \Function {G-sort-recurse}{$A$, $\ell$, $u$} % \Comment {sort subarray $A[\ell..\u]$ } 
+\If {$u - \ell \leq 0$} 
+	\State return \Comment{1 or fewer elements already sorted}
+\ElsIf{$u-\ell = 1$} \Comment{2 elements}
+	\If {$A[u] < A[\ell]$ } \Comment{swap values}
+		\State  temp $\gets A[u]$
+		\State $A[u] \gets A[\ell]$
+		\State $A[\ell] \gets$ temp
+	\EndIf
+\Else \Comment{3 or more elements}
+\State size $\gets u - \ell + 1$
+\State twothirds $\gets \lceil (2 * \mbox{size})  / 3 \rceil$
+\State G-sort-recurse($A, \ell, \ell + \mbox{twothirds} - 1$)
+\State G-sort-recurse($A, u - \mbox{twothirds}+1 , u$)
+\State G-sort-recurse($A, \ell, \ell + \mbox{twothirds} - 1$)
+\EndIf 
+\EndFunction
+\end{algorithmic}
+
+a (4 pts). First, prove that the algorithm correctly sorts the numbers in the array (in increasing order).  
+After showing that it correctly sorts 1 and 2 element intervals, you may make the (incorrect) assumption that the number of elements being passed to \emph{G-sort-recurse} is always a multiple of 3 to simplify the notation (and drop the floors/ceilings). 
+\begin{solution}
+%type your answer here
+\end{solution}
+\newpage
+
+b (1 pts). Next, Derive a recurrence for the algorithm's running time (or number of comparisons made).
+\begin{solution}
+%type your answer here
+\end{solution}
+\newpage
+
+c (3 pts). Finally, obtain a good asymptotic upper bound (big-$O$) for your recurrence.  
+\begin{solution}
+%type your answer here
+\end{solution}
+\newpage
+%Complete the following.
+“I have read and agree to the collaboration policy.” -- FirstName LastName, email@ucsc.edu
+\\
+Collaborators: %write the name of the collaborators. If you worked by yourself, please write 'none'.
+\\
+\hrule
+
+
+\item (Total: 8 pts) Induction Proof correctness.
+
+Recall that a full binary tree 
+contains (A) just a single leaf node, or (B) is
+an internal node (the root) connected to two disjoint 
+subtrees, which are themselves full binary trees.
+
+First consider the following claim and proof.  First, think about if the theorem is true or not, and if the proof is correct or not
+(do not include these preliminary thoughts in your answer).
+
+\begin{claim} 
+In any full binary tree, the number of leaf nodes is 
+one greater than the number of internal nodes.
+\end{claim}
+
+\begin{proof} (??)  By induction on number of internal nodes.
+
+For all $n\geq 0$, let $\P(n)$ be the statement:
+``all full binary trees having exactly 
+$n$ internal nodes have $n+1$ leaf nodes.''
+
+{\bf Base Case:} Show $\P(0)$. 
+Every full binary tree with zero internal nodes is formed by
+case (A) of the definition, and thus consists of 
+just a single leaf node.  
+Therefore, every full binary tree
+with 0 internal nodes has exactly 1 leaf node, and $\P(0)$ is true.
+
+{\bf Inductive Step:} Assume $k>0$ and $\P(k)$ holds to show that $\P(k+1)$ also holds. 
+
+Consider an arbitrary full binary tree $T$ with $k$ internal nodes. 
+By the inductive hypothesis $T$ has  $k+1$ external nodes.
+Create a $k+1$ internal node tree $T'$ by removing a bottom leaf node in $T$ and replacing it with an internal node connected to
+two children that are leaves.
+$T'$ has one more internal node than $T$, and $2-1=1$ more external node than $T$.
+Therefore $T'$ has $k+1$ internal nodes and $(k+1)+1=k+2$ external nodes, proving $P(k+1)$.
+\end{proof}
+
+Now consider the following claim.  
+\begin{claim} \label{c:height}
+For all $n$, all full binary trees with $n$ internal nodes have
+height $n-1$.
+\end{claim}
+
+We have the following ``proof'' of the claim.
+
+\begin{proof} ??
+By induction on $n$. For each $n\geq 1$,
+let $\P(n)$ be the statement ``all  full binary trees with $n$ internal nodes have height $n-1$''.
+
+{\bf Base Case:} Show $\P(0)$. 
+Every  full binary tree with zero internal nodes is formed by
+case (A) of the definition, and thus consists of 
+just a single leaf node.  
+Therefore, every full binary tree
+with 0 internal nodes has only one leaf (which is also the root).
+Thus the longest root-to-leaf path has length 0, and $\P(0)$ is true.
+
+{\bf Inductive Step:} Let $n\geq 1$ and show that $\P(n)$ implies $\P(n+1)$.
+Let $T$ be an arbitrary full binary tree with $n$ internal nodes.  
+Create the binary tree $T'$ having $n+1$ internal nodes  
+by removing a bottom leaf node in $T$ and replacing it with an internal node connected to
+two children that are leaves.
+The longest root-to-leaf path in $T'$ is thus one greater than the longest root-to-leaf path in $T$,
+so the height of $T'$ is the height of $T$ plus 1.
+Furthermore, by the inductive hypothesis $\P(n)$, the height of $T$ is $n-1$.
+Therefore $T'$ has $n+1$ internal nodes and height $n-1+1=n$, showing $\P(n+1)$.
+\end{proof}
+
+
+a (1 pt). Give a counter-example showing that claim~\ref{c:height} is false.
+(Recall that the height of a binary tree is the length of the longest root-to-leaf path).
+\begin{solution}
+%type your answer here
+\end{solution}
+\newpage
+
+b (3 pts). Identify and clearly describe the flaw in the proof of claim~\ref{c:height}.
+\begin{solution}
+%type your answer here
+\end{solution}
+\newpage
+c (4 pts). Now go back to the proof of the first claim.  \\
+Does it have a flaw or hidden assumption? (1 pt) \\
+Either clearly describe the flaw/assumption, or argue that the proof is correct (3 pts).
+\begin{solution}
+%type your answer here
+\end{solution}
+\newpage
+%Complete the following.
+“I have read and agree to the collaboration policy.” -- FirstName LastName, email@ucsc.edu
+\\
+Collaborators: %write the name of the collaborators. If you worked by yourself, please write 'none'.
+\\
+\hrule
+\item (Total: 6 pts) Asymptotic notation:  Exercise 5 of Chaper 2: Prove or disprove 3 asymptotic implications: If $f(n)$ is in $O(g(n))$ then is it always true that: \\
+a (2pts). $\log_2 (f(n))$ is in $O(( \log_2 (g(n))$.  
+\begin{solution}
+%type your answer here
+\end{solution}
+\newpage
+b (2 pts). $2^{f(n)}$ is in $O( 2^{g(n)} )$. 
+\begin{solution}
+%type your answer here
+\end{solution}
+\newpage
+c (2 pts). $f(n)^2$ is in $O(g(n)^2)$.
+\begin{solution}
+%type your answer here
+\end{solution}
+\newpage
+%Complete the following.
+“I have read and agree to the collaboration policy.” -- FirstName LastName, email@ucsc.edu
+\\
+Collaborators: %write the name of the collaborators. If you worked by yourself, please write 'none'.
+\\
+\hrule
+\item (3 pts) Least counterexample: Give a proof by contradiction using the \emph{least counterexample} method that:
+\[
+\sum_{i=0}^n i = \frac{n (n+1)}{2}  \qquad \text{for all $n \geq 0$}.
+\]
+\begin{solution}
+%type your answer here
+\end{solution}
+\newpage
+\end{enumerate}
+
+\subsection*{Recommended exercises (not to be turned in)}
+\begin{enumerate}
+\item The solved exercises in Chapters 1, 2, and 5 (Divide and Conquer).
+\item Exercises 1 and 2 in Chapter 1 of the text.
+\item Exercises 3 and 4 in Chapter 2 of the text.
+\end{enumerate} 
+\end{document}
