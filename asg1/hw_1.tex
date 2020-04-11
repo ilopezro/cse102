@@ -2,9 +2,7 @@
 \usepackage{fullpage,amsthm,amsfonts,amssymb,epsfig,amsmath,times,amsthm}
 \usepackage{algpseudocode}
 \usepackage{hyperref}
-
-
-
+\usepackage{pgfplots}
 
 \newtheorem{theorem}{Theorem}
 \newtheorem{claim}[theorem]{Claim}
@@ -43,7 +41,7 @@ Before you begin the assignment, please read the following carefully.
 \emph{I have read and agree to the collaboration policy.}  -- Isai Lopez, ilopezro@ucsc.edu
 % replacing "FirstName LastName, email@ucsc.edu" with your information.
 \\
-Collaborators: %write the name of the collaborators. If you worked by yourself, please write 'none'.
+Collaborators: None%write the name of the collaborators. If you worked by yourself, please write 'none'.
 \\
 \hrule
 \begin{enumerate}
@@ -103,36 +101,121 @@ b (1 pts). Next, Derive a recurrence for the algorithm's running time (or number
 \newpage
 
 c (3 pts). Finally, obtain a good asymptotic upper bound (big-$O$) for your recurrence.  
-\begin{solution} \footnote{I referenced this \hyperlink{https://stackoverflow.com/questions/30201391/how-to-write-a-recurrence-relation-for-a-given-piece-of-code}{link} from StackOverflow to formulate my answer.}
-	\item In its worst case, the algorithm will run on an array that is in descending order.
+\begin{solution} \footnote{I referenced this \href{https://stackoverflow.com/questions/30201391/how-to-write-a-recurrence-relation-for-a-given-piece-of-code}{StackOverflow} and an article from \href{https://medium.com/@randerson112358/recurrence-relation-475d4a4eaed1}{Medium}.}
+	\begin{equation} \label{eq:1}
+		T(n) = 3T(\frac{2n}{3}) + \mathcal{O}(1)
+	\end{equation}
+	\begin{equation} \label{eq:2}
+		T(1) = \mathcal{O}(1) = 1 = c \textnormal{\;, where c is a constant}
+	\end{equation}
+	\begin{center}
+		I will begin my mathematical derivation by using the iteration method.
+	\end{center}
+	\begin{equation} \label{eq:3}
+		T(\frac{2n}{3}) = 3T(\frac{2n}{3} * \frac{2}{3}) + c\; =\; 3T(\frac{4n}{9}) + c
+	\end{equation}
+	\begin{center}
+		I will plug equation \ref{eq:3} back into equation \ref{eq:1} to solve for $T(n)$
+	\end{center}
+	\begin{equation}\label{eq:4}
+		T(n) = 3(3T(\frac{4n}{9}) + c) + c
+	\end{equation}
+	\begin{equation}\label{eq:5}
+		T(n) = 9T(\frac{4n}{9}) + 2c
+	\end{equation}
+	\begin{equation}\label{eq:6}
+		T(\frac{4n}{9}) = 3T(\frac{4n}{9} * \frac{2}{3}) + c \; = \; 3T(\frac{8n}{27}) + c 
+	\end{equation}
+	\begin{equation}\label{eq:7}
+		T(n) = 9(3T(\frac{8n}{27}) + c ) + 2c
+	\end{equation}
+	\begin{equation}\label{eq:8}
+		T(n) = 27T(\frac{8n}{27}) + 3c
+	\end{equation}
+The trend that this equation has with each recursive call is: $T(n) = 3^kT(\frac{2^k * n}{3^k}) + kc$. In order to find the runtime of this function, I will set use equation \ref{eq:2} in order to find my $k$. Given that T(1) = 1, I can set the following equation: \begin{equation*}\frac{2^k \cdot n}{3^k} = 1 \end{equation*} \begin{equation*} 2^k \cdot n = 3^k \cdot 1\end{equation*} \begin{equation*} n = \frac{3^k}{2^k}\end{equation*} \begin{equation*} \log_2(n) = \log_2(\frac{3^k}{2^k}) \end{equation*} \begin{equation*} \log_2(n) = k \cdot \log_2(\frac{3^k}{2^k}) \end{equation*} \begin{equation*} \frac{\log_2(n)}{\log_2(\frac{3^k}{2^k})} = k  \end{equation*} I will plug in $k$ in $T(n)$ with the known fact that $T(1) = 1$. \begin{equation*} T(n) = 3^{\frac{\log_2(n)}{\log_2(\frac{3^k}{2^k})}} + (\frac{\log_2(n)}{\log_2(\frac{3^k}{2^k})})c \end{equation*} For a sufficiently large $n$, the second half of the equation will become insignificant compared to the exponential, therefore we can say that $T(n) \in \mathcal{O}(3^{\frac{\log_2(n)}{\log_2(\frac{3^k}{2^k})}})$.
 \end{solution}
 \newpage
 %Complete the following.
-“I have read and agree to the collaboration policy.” -- FirstName LastName, email@ucsc.edu
+“I have read and agree to the collaboration policy.” -- Isai Lopez Rodas, ilopezro@ucsc.edu
 \\
-Collaborators: %write the name of the collaborators. If you worked by yourself, please write 'none'.
+Collaborators: None%write the name of the collaborators. If you worked by yourself, please write 'none'.
 \\
 \hrule
 \item (Total: 6 pts) Asymptotic notation:  Exercise 5 of Chaper 2: Prove or disprove 3 asymptotic implications: If $f(n)$ is in $O(g(n))$ then is it always true that: \\
 a (2pts). $\log_2 (f(n))$ is in $O(( \log_2 (g(n))$.  
 \begin{solution}
-%type your answer here
+	\item By Big-O definition\footnote{I took this definition from my CMPS 101 Notes taken during Sesh's Fall 2019 class}, \begin{equation}\label{eq:9} T(n) \in O(f(n)) \textnormal{\;if\;} \;\exists\;n_0,c > 0\;\;s.t.\;\; \forall n \geq n_0, T(n) \leq c \cdot f(n) \end{equation}   
+	I will disprove this by the use of a counterexample. The definition says we need to find a constant $c$ such that $f(n) \leq c \cdot g(n)$ in order for $f(n) \in \mathcal{O}(g(n))$. If we take $f(n) = 5$, $g(n) = 2$ and $c = 1$, we see that: \begin{equation}\label{eq:10} f(n) \stackrel{?}{\in} \mathcal{O}(g(n))\end{equation} \begin{equation}\label{eq:11} 5 \notin 2 \cdot 2 \end{equation} 
+	By equation \ref{eq:11}, we can see that there exists such a combination where we end up with $f(n) \notin \mathcal{O}(g(n))$ because $f(n) > g(n)$, which contradicts the definition given in equation \ref{eq:9}.
 \end{solution}
 \newpage
 b (2 pts). $2^{f(n)}$ is in $O( 2^{g(n)} )$. 
 \begin{solution}
-%type your answer here
+	\item
+	I will use the same definition given in equation \ref{eq:9}. I will also take the same approach in providing a counter example
+	to disprove $2^{f(n)} \in \mathcal{O}(2^{g(n)})$. Through the definition, we know that there must be a function $f$ and a function $g$
+	such that given a constant $c$ and $n$, then $f(n) \leq c \cdot g(n)$. I will use $f(n) = 5n$, $g(n) = 2n$, and constant $c=5$. 
+	Plugging these into the definition we get: 
+	\begin{equation}\label{eq:12}
+		2^{5n} \stackrel{?}{\in} 5 \cdot 2^{2n}
+	\end{equation}
+	For n = 1,
+	\begin{equation}\label{eq:13}
+		2^{5} \notin 5 \cdot 2^{2}
+	\end{equation}
+	because $32 > 20$. Therefore, we have found a contradiction, which means that the definition given in equation \ref{eq:9} is not satisifed. 
 \end{solution}
 \newpage
 c (2 pts). $f(n)^2$ is in $O(g(n)^2)$.
 \begin{solution}
-%type your answer here
+	\item 
+	Given the definition in equation \ref{eq:9}, we know that $f(n) \leq c \cdot g(n)$ in order for $f(n) \in \mathcal{O}(g(n))$.
+	In this problem, the conditions given in equation \ref{eq:9} are all satisfied. \\
+	\begin{equation*}\exists\;n_0, c > 0\end{equation*}
+	\begin{equation*}\forall\;n \geq n_0, f(n) \leq c \cdot g(n)\end{equation*}
+	As an example, I am using f(n) = $x^2$ as demonstrated in red in the table below. 
+	For any and all $c$ values (x values), we can see that $f(n) \leq c \cdot g(n)$, where g(n) is also $x^2$, but the c values are 3 and 10.
+	Therefore, $f(n)^2 \in \mathcal{O}(g(n)^2)$. 
+	\begin{center}
+		\begin{tikzpicture}
+			\begin{axis}[
+				axis lines = left,
+				xlabel = $n$,
+				ylabel = {Functions},
+			]
+			%Below the red parabola is defined
+			\addplot [
+				domain=-10:10, 
+				samples=50, 
+				color=red,
+			]
+			{x^2};
+			\addlegendentry{$f(n) = n^2$}
+			%Here the blue parabloa is defined
+			\addplot [
+				domain=-10:10, 
+				samples=50, 
+				color=blue,
+				]
+				{3* x^2};
+			\addlegendentry{$g(n) = 3 \cdot n^2$}
+			\addplot [
+				domain=-10:10, 
+				samples=50, 
+				color=green,
+				]
+				{10* x^2};
+			\addlegendentry{$h(n) = 10 \cdot n^2$}
+			
+			\end{axis}
+		\end{tikzpicture}
+	\end{center}
 \end{solution}
 \newpage
 %Complete the following.
-“I have read and agree to the collaboration policy.” -- FirstName LastName, email@ucsc.edu
+“I have read and agree to the collaboration policy.” -- Isai Lopez Rodas, ilopezro@ucsc.edu
 \\
-Collaborators: %write the name of the collaborators. If you worked by yourself, please write 'none'.
+Collaborators: None%write the name of the collaborators. If you worked by yourself, please write 'none'.
 \\
 \hrule
 \item (3 pts) Least counterexample: Give a proof by contradiction using the \emph{least counterexample} method that:
@@ -140,7 +223,29 @@ Collaborators: %write the name of the collaborators. If you worked by yourself, 
 \sum_{i=0}^n i = \frac{n (n+1)}{2}  \qquad \text{for all $n \geq 0$}.
 \]
 \begin{solution}
-%type your answer here
+	\item
+	I will start by providing a base case: i = 0. 
+	\begin{equation}\label{eq:14}
+		\sum_{i=0}^0 i = \frac{0 (0+1)}{2} = 0
+	\end{equation}
+	Since we know that the above equation holds true for i = 0, we will assume, for the sake of contradiction, that $\exists\; a \in \mathbb{N}$ such that
+	\begin{equation}\label{eq:15}
+		\sum_{i=0}^a i \neq \frac{a (a+1)}{2}
+	\end{equation}
+	In order to show the contradiction, I will now do the summation from $i=0 \rightarrow (a-1)$.
+	\begin{equation}\label{eq:16}
+		\sum_{i=0}^{a-1} i = \frac{(a-1) ((a-1)+1)}{2} = \frac{(a-1)(a-1+1)}{2} = \frac{(a-1)(a)}{2} = \frac{a^2-a}{2}
+	\end{equation}
+	I will now add \textnormal{a} to equation \ref{eq:16}
+	\begin{equation}\label{eq:17}
+		a + \sum_{i=0}^{a-1} i = a + \frac{a^2-a}{2} = \frac{2a}{2} + \frac{a^2-a}{2} = \frac{2a+(a^2-a)}{2}
+	\end{equation}
+	\begin{equation*}
+		= \frac{a^2+2a-a}{2} = \frac{a^2+a}{2} = \frac{a(a+1)}{2} = \sum_{i=0}^{a} i
+	\end{equation*}
+	Equation \ref{eq:17} shows that adding a to the summation from $i=0 \rightarrow (a-1)$ results in the summation from $i=0 \rightarrow a$. However, this contradicts 
+	with our previous statement in equation \ref{eq:15}. Therefore, through a contradiction, we are able to say that the equation $\sum_{i=0}^n i = \frac{n (n+1)}{2}$ holds 
+	true for all $n \geq 0$.
 \end{solution}
 \newpage
 \end{enumerate}
