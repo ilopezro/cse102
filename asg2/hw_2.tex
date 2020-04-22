@@ -1,0 +1,234 @@
+\documentclass[11pt]{article}
+\usepackage{fullpage,amsthm,amsfonts,amssymb,epsfig,amsmath,times,amsthm}
+\usepackage{algpseudocode} %use this package for writing pseudocode
+\usepackage{tikz}
+
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{claim}[theorem]{Claim}
+\theoremstyle{definition}
+\newtheorem*{solution}{Solution}
+\newtheorem*{algorithm}{Algorithm}
+\newtheorem*{proofoc}{Proof of correctness}
+\begin{document}
+% PUT YOUR INFORMATION IN THESE TWO LINES 
+\hfill Isai  Lopez Rodas  
+
+\hfill 1605542  ilopezro@ucsc.edu
+
+\begin{center}
+{\bf\Large 
+CMPS 102 --- Spring 2020 --  Homework 2}
+\end{center}
+
+\begin{center}
+Four problems, 10 points each, due Monday April 27 (11:59 PM) on Gradescope.  \\
+\end{center}
+
+%\newcommand{\set}[1]{\{ #1 \}}
+%\newcommand{\qed}{ \large \hfill $\Box$ \\ \medskip }
+%\newcommand{\qedq}{ \large \hfill $\Box$?? \\ \medskip }
+
+% \emph{This is the draft version of written homework two.  
+% The questions will not change, but I am distributing it early so 
+% you can start thinking about the problems and help catch any ambiguities 
+% or typos before the final version of the homework is posted.  } 
+
+\medskip
+
+\renewcommand{\P}{\mbox{IH}}
+
+\noindent
+Before you begin the assignment, please read the following carefully.
+\begin{itemize}
+    \item Read the \emph{Homework Guidelines}.
+    \item The assignment consists of four problems worth ten points each. Unless otherwise stated, algorithms and their proofs of correctness are weighted equally.
+    \item Due to class size, it is likely that only a subset of the problems will be graded. We will announce the problem(s) which will be graded after the due date of the assignment.
+    \item Every part of each question begins on a new page. Do not change this.
+    \item This does not mean that you should write a full page for every question. Your answers should be short and precise. Lengthy and wordy answers will lose points.
+    \item Do not change the format of this document. Simply type your answers as directed.
+    \item You are \textbf{not} allowed to work in teams.
+\end{itemize}
+%Complete the following.
+\emph{I have read and agree to the collaboration policy.}  -- Isai Lopez Rodas, ilopezro@ucsc.edu
+% replacing "FirstName LastName, email@ucsc.edu" with your information.
+\\
+Collaborators: None%write the name of the collaborators. If you worked by yourself, please write 'none'.
+\\
+\hrule
+\subsection*{Recommended exercises (not to be turned in)}
+\begin{enumerate}
+\item The solved exercises in 5 (Divide and Conquer).
+\end{enumerate} 
+Continued on next page.
+\newpage
+\subsection*{Problems to be turned in}
+\begin{enumerate}
+%%%%  Cheap Location
+\item 
+You are interested in building a coffeeshop and charging station beside a freeway running between two cities.
+Let $n$ be the number of interchanges between the cities, and number them consecutively so that interchange 0 is  at the first  city, 1 is the next interchange, and so on, with $n-1$ being the interchange at the other city.
+We say each interchange $i$ is adjacent to  interchanges $i-1$ and $i+1$ (only).
+
+Each interchange $i$ has a cost $c(i)$ to construct a coffee shop/charging station. 
+Call an interchange $i$ a \emph{local minimum} if (and only if) the cost of building there is less than the costs of building at
+the adjacent interchanges, i.e.~both $c(i) < c(i+1)$ and $c(i) < c(i-1)$.
+You want to ensure that you build at a local minimum so that 
+no one can build a coffeeshop/charging station more cheaply at an adjacent interchange.  
+
+You can assume that: 
+\begin{itemize}
+\item $n \geq 3$, so there is at least one interchange between the cities.
+\item  The costs at the cities $c(0)$ and $c(n-1)$ are both known to be the same large number (say $100n$).
+\item  The other costs are all different and are all strictly less than $c(0)$ (and thus also less than $c(n-1)$).
+\end{itemize}
+The difficulty is that  the $c(i)$ values are not known ahead of time (except for $c(0)$ and $c(n-1)$) and it is expensive to determine the cost of building at any interchange.  
+
+The goal is to 
+create a divide and conquer algorithm that 
+finds any interchange $k$ that is a local minimum while examining relatively few 
+%only $O(\lg n)$ 
+of the $c(i)$ values.
+Although there may be many local minimums, your algorithm need only find one of them.
+\begin{enumerate}
+\newpage
+\item (2 points) First, prove that a local minimum exists.
+\begin{solution}
+%write your solution here
+\end{solution}
+\newpage
+\item (3 points) Clearly describe a divide and conquer algorithm for the problem
+\begin{algorithm}
+%write your solution here
+\end{algorithm}
+\newpage
+\item (3 points) Prove that your algorithm is correct
+\begin{proofoc}
+%write your solution here
+\end{proofoc}
+\newpage
+\item (2 points) Analyze the (worst case) number of interchange costs (i.e.~$c(i)$ values) examined by your algorithm
+as a function of $n$.
+\begin{solution}
+%write your solution here
+\end{solution}
+\newpage
+\end{enumerate}
+
+%%%%%%end of question
+%Complete the following.
+\emph{I have read and agree to the collaboration policy.}  -- FirstName LastName, email@ucsc.edu
+% replacing "FirstName LastName, email@ucsc.edu" with your information.
+\\
+Collaborators: %write the name of the collaborators. If you worked by yourself, please write 'none'.
+\\
+\hrule
+\item 
+We all know how to search a sorted 1-dimensional array. 
+This problem involves searching two dimensional arrays that are partially sorted.
+
+Call a two-dimensional square ($n\times n$) array $A$ \emph{line-sorted} if 
+\begin{itemize}
+\item the entries of $A$ are all distinct numbers,
+\item the entries in each row are sorted in ascending order (left to right), and 
+\item the entries in each column are sorted in ascending order (top to bottom).
+\end{itemize}
+
+If $A$ is line-sorted then both
+$A[i-1,j] < A[i,j] < A[i+1, j]$ and 
+$A[i,j-1] < A[i,j] < A[i, j+1]$ (assuming the indices are inside the array).
+
+Devise a \emph{two-dimensional divide and conquer} algorithm which takes a line-sorted array $A$ and 
+number $k$ to search for, 
+and returns either indices $i$ and $j$ such that $A[i,j] = k$  or an indicator that $k$ is not in the array.
+Describe your algorithm (in pseudo-code),  
+argue that your algorithm is correct, give and
+and analyze its (worst-case) running time through a recurrence. 
+You may assume that $n$ is a power of two.
+
+The goal is for your algorithm to take asymptotically less time than the number of elements 
+in the array,  but it will probably not be as efficient as simply performing binary search on each row.
+\\
+\\
+\\
+Continued on the next page.
+\newpage
+\begin{algorithm}
+%write your solution here
+\end{algorithm}
+\newpage
+\begin{proofoc}
+%write your solution here
+\end{proofoc}
+\newpage
+
+%Complete the following.
+\emph{I have read and agree to the collaboration policy.}  -- FirstName LastName, email@ucsc.edu
+% replacing "FirstName LastName, email@ucsc.edu" with your information.
+\\
+Collaborators: %write the name of the collaborators. If you worked by yourself, please write 'none'.
+\\
+\hrule
+\item Problem 3 in Chapter 5 (Divide and Conquer).  This is the equivalent back card problem: determine if \emph{more than} half the $n$ possible fraudulent bank cards are from the same account using a machine that detects if two cards are from the same account or not.   If this doesn't sound like Problem 3 in Chapter 5 of your version of the text, then let us know.
+
+% Clearly describe your algorithm taking only $O(n \log n)$ machine uses (3 pts), prove that it is correct (4 pts), 
+% and prove that your algorithm uses the machine only $O(n \log n)$ times.
+Clearly describe your algorithm, prove that it is correct, and analyze its running time. 
+For full credit, the running time should be $O(n \lg n)$. 
+\begin{algorithm}
+%write your solution here
+\end{algorithm}
+\newpage
+\begin{proofoc}
+%write your solution here
+\end{proofoc}
+\newpage
+%%%%%%%%%%%%%%%end of question
+%Complete the following.
+\emph{I have read and agree to the collaboration policy.}  -- FirstName LastName, email@ucsc.edu
+% replacing "FirstName LastName, email@ucsc.edu" with your information.
+\\
+Collaborators: %write the name of the collaborators. If you worked by yourself, please write 'none'.
+\\
+\hrule
+\item
+Tiling a Room.
+You have a square room that is $2^k$ feet on a side (for some $k \geq 1$), 
+so you can think of the room as a grid of  $2^k \times 2^k$ cells.
+One of these cells is used for a floor vent.  You are to find a way to fill in the $(2^k \times 2^k )-1$ 
+other cells perfectly with L-shaped tiles, like the one shown. 
+The L-shaped tiles can be rotated in four different ways, but cannot be cut or extend outside the room.
+Give a divide and conquer algorithm that finds a tiling and argue that it is correct.
+
+\medskip
+
+\centerline{
+\begin{tikzpicture}[scale=0.4]
+\filldraw[fill=yellow!80!white] (0,0) rectangle (8,8);
+\draw[step=1cm,very thin] (0,0) grid (8,8);
+\filldraw[fill=black] (1,2) rectangle (2,3);
+%
+\filldraw[fill=blue!40!white] (15,4)  rectangle (16,5);
+\filldraw[fill=blue!40!white] (16,4)  rectangle (17,5);
+\filldraw[fill=blue!40!white] (16,5)  rectangle (17,6);
+%
+\end{tikzpicture}
+}
+      
+For full credit, your algorithms should take $O(n)$ time where $n=2^{2k}=(2^k)^2$ is the number of cells in the room.  The intent of the problem is to show that rooms of this kind can be tiled, do not worry about the
+book-keeping needed to record the particular solution found by your divide and conquer algorithm.
+\\
+\\
+\\
+Continued on next page.
+\newpage
+\begin{algorithm}
+%write your solution here
+\end{algorithm}   
+\newpage
+\begin{proofoc}
+%Write your solution here
+\end{proofoc}
+\newpage
+\end{enumerate}
+\end{document}
