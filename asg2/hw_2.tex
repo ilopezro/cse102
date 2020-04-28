@@ -94,33 +94,83 @@ Although there may be many local minimums, your algorithm need only find one of 
 \newpage
 \item (2 points) First, prove that a local minimum exists.
 \begin{solution}
-%write your solution here
+    \item I will use proof by contradiction to show that a local minumum exists. \\[1em]
+    \textbf{\textit{Base Case: }}When $n$ = 3, we know that $c(0)$ and $c(2)$ are both equal to each other in terms of costs. Additionally, we also know that $c(1)$ 
+    is stricly less than $c(0)$ and $c(2)$. This means that there is a local minimum at $n$ = 2 since $c(1) < c(0)$ \textbf{AND} $c(1) < c(2)$. \\[1em]
+    For the sake of contradiction, I will assume that no local minimum exists. By the definition of local maxima and minima, this means that $c(0)$ will have to be the largest cost and every interchange thereafter is 
+    either stricly lower or stricly higher than the cost of building that first interchange. So if $c(0)$ is the largest cost, that still satisfies the $3^{rd}$ requirement of being able to build an interchange. According 
+    to the $2^{nd}$ requirement, $c(0)$ is the largest cost. So I will say that interchange city $c(1)$ will be stricly less than $c(0)$. $c(2)$ will be stricly less than $c(1)$ and every city until $c(n-1)$ will all be stricly 
+    less than their previous interchange city. This creates the inequality $c(0) > c(1) > c(2) \dots > c(n-1)$; however, we've got a contradiction here because this breaks the $2^{nd}$ requirement in that $c(0)$ = $c(n-1)$. 
 \end{solution}
 \newpage
 \item (3 points) Clearly describe a divide and conquer algorithm for the problem
 \begin{algorithm}
-%write your solution here
+   \item  I will design a Binary Search algorithm that returns the first local minumum that it finds. It will contain two recursive calls on the first $\frac{n}{2}$ and the last $\frac{n+1}{2}$ elements.
+   
+   \begin{algorithmic}[1]
+    \Procedure{Binary Search}{$\mathcal{A}$, $\mathcal{L}$, $\mathcal{R}$} \Comment{$\mathcal{A}$ is array, $\mathcal{L}$ is left index, $\mathcal{R}$ is right index}
+        \State $len \gets$ length of $\mathcal{A}$
+        \If{$len = 3$}
+            \State \textbf{return} $1$
+        \Else \Comment{$len >$ 3}
+            \State $mid \gets \frac{\mathcal{L} + \mathcal{R}}{2}$
+            \State $midElement \gets \mathcal{A}[mid]$
+            \State $leftElement \gets \mathcal{A}[mid-1]$
+            \State $rightElement \gets \mathcal{A}[mid+1]$
+            \If{$midElement < leftElement$ and $midElement < rightElement$}
+                \State \textbf{return} $mid$
+            \ElsIf{$leftElement > rightElement$}
+                \State \Call{Binary Search}{$\mathcal{A}$, $mid +1$, $\mathcal{R}$}
+            \Else
+                \State \Call{Binary Search}{$\mathcal{A}$, $\mathcal{L}$, $mid$}
+            \EndIf
+        \EndIf
+    \EndProcedure
+   \end{algorithmic}
+
+   I have a base case on line 3 when the length of the array = 3. Since we proved that a local minimum must exists, I start off by saying that if our array is of size 3, then return the middle value. I then compare the 
+   middle element of the array to its adjacent elements and if they middle element is less than its adjacent elements, we have found a local minimum. I return the index of the minima. If the local minimum does not exists within 
+   the initial $\mathcal{L}$ and $\mathcal{R}$ indeces, I recursively call on $\mathcal{L}$ to $mid$ and $mid + 1$ to $\mathcal{R}$ until a minumum is found. 
 \end{algorithm}
 \newpage
 \item (3 points) Prove that your algorithm is correct
 \begin{proofoc}
-%write your solution here
+    \item 
+    \textbf{\textit{Base Case: }} $n$ = 3. \\
+    My algorithm will correctly return the local minima at index 1 because we are given the rule that the first and last elements/cities are the largest and all other interchanging 
+    stops are stricly lower than the first and last element. \\[1em]
+    \textbf{\textit{Inductive Step: }}I will assume that my algorithm correctly sorts elements up until $n$. I will prove that my algorithm correctly sorts $n+1$ elements.\\[1em]
+    Since we are only looking for first lowest element we can find, will initially compare our median value to its neighboring elements. If the median value is not a local minima, we will 
+    recurse on the side where the smallest of the three elements was, which reduces the number of elements we are looking at by half. Because we recurse on the side that has the smallest element, 
+    we are guaranteed to find the smallest value because we are following the smallest element all the way through until we find a local minima.
 \end{proofoc}
 \newpage
 \item (2 points) Analyze the (worst case) number of interchange costs (i.e.~$c(i)$ values) examined by your algorithm
 as a function of $n$.
 \begin{solution}
-%write your solution here
+    \item If we have $n$ number of cities, I can deduce that in the worst case, the algorithm will compare $\frac{n}{2}$ every time it is called. Within each recursive call, we can have 
+    up to three comparisons made. We compare median value to its adjacent element values and if no minima is found, we go on to compare if the left and right elements are less than or greater 
+    than each other. These comaprisons are made in constant time so our recurrance relation is $T(n) = T(\frac{n}{2}) + \mathcal{O}(1)$. Using Master's Theorem, we can say that:
+    \begin{center}
+        $a$ = 1, $b$ = 2, $d$ = 0
+    \end{center}  
+    Using case \#2, I get $f(n) = \mathcal{O}(n^{\log_ba})$. We can then say that $T(n) = \mathcal{O}(n^{\log_ba}\log n)$. Plugging in the above values, I get:
+    \begin{align*}
+        T(n) & = \mathcal{O}(n^{\log_21}\log n) \\[0.7em]
+        & = \mathcal{O}(n^{0}\log n) \\[0.7em]
+        & = \mathcal{O}(\log n)
+    \end{align*}
+    Therefore, we can conclude, through the Master's Theorem, that the worst case runtime of my algorithm is $\mathcal{O}(\log n)$.
 \end{solution}
 \newpage
 \end{enumerate}
 
 %%%%%%end of question
 %Complete the following.
-\emph{I have read and agree to the collaboration policy.}  -- FirstName LastName, email@ucsc.edu
+\emph{I have read and agree to the collaboration policy.}  -- Isai Lopez Rodas, ilopezro@ucsc.edu
 % replacing "FirstName LastName, email@ucsc.edu" with your information.
 \\
-Collaborators: %write the name of the collaborators. If you worked by yourself, please write 'none'.
+Collaborators: None%write the name of the collaborators. If you worked by yourself, please write 'none'.
 \\
 \hrule
 \item 
