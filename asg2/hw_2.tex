@@ -409,8 +409,8 @@ Continued on next page.
         & \leq \mathcal{O}(n^2)
     \end{align*}
     We can conclude from Master's Theorem that this algorithm runs in $\mathcal{O}(n^2)$; however, I said that $n$ was equivalent to $2^k$, which is the dimension of the square. 
-    This means that if we plug in my value for n, we get that the runtime is $\mathcal{O}((2^k)^2)$ or $\mathcal{O}(2^{2k})$. I can set $n = 2^2k$ since the total number of 
-    tiles that we look at is $2^k \times 2^k = (2^k)^2$. Therefore, our algorithm runs in $\mathcal{O}(n)$. 
+    This means that if we plug in my value for n, we get that the runtime is $\mathcal{O}((2^k)^2)$ or $\mathcal{O}(2^{2k})$. I can set $n = 2^{2k}$ since the total number of 
+    tiles that we look at is $2^k \times 2^k = (2^k)^2 = 2^{2k}$. Therefore, our algorithm runs in $\mathcal{O}(n)$. 
 \end{proofoc}
 \newpage
 \end{enumerate}
