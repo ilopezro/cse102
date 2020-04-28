@@ -221,6 +221,8 @@ Continued on the next page.
         \State \textbf{return} False
         \EndProcedure
     \end{algorithmic}
+    I will start looking at the top right corner and evaluate if element $k$ is greater than or less than our current indeces $(row,column)$. If $k > \mathcal{A}[row][column]$, we reduce the column value because the numbers in that column are too big. 
+    If $k < \mathcal{A}[row][column]$ we increase row value because the numbers in that row are too small. 
 \end{algorithm}
 \newpage
 \begin{proofoc}
@@ -370,12 +372,15 @@ Continued on next page.
             \State Place tile around air vent
         \EndIf
         \State Place Tile in the center, but in such a way that it is not inside the $\frac{n}{2} \times \frac{n}{2}$ square that contains air vent 
-        \State \Call{Tiling}{$\frac{n}{2}, p$}
-        \State \Call{Tiling}{$\frac{n}{2}, p$}
-        \State \Call{Tiling}{$\frac{n}{2}, p$}
-        \State \Call{Tiling}{$\frac{n}{2}, p$}
+        \State \Call{Tiling}{$\frac{n}{2}, p_1$}
+        \State \Call{Tiling}{$\frac{n}{2}, p_2$}
+        \State \Call{Tiling}{$\frac{n}{2}, p_3$}
+        \State \Call{Tiling}{$\frac{n}{2}, p_4$}
         \EndProcedure
     \end{algorithmic}
+    The base case will simply place an L-shaped tile wherever it goes and does not obstruct the air vent. If the square is greater than 2, then 
+    the algorithm will place an L-shaped tile in the middle that covers $\frac{n}{2} \times \frac{n}{2}$ square that do not have the air vent. It will then recursively proceed to call on all $\frac{n}{2}$ 
+    sized squares with each $p$ representing the empty square to be left out. 
 \end{algorithm}   
 \newpage
 \begin{proofoc}
