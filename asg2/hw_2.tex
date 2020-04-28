@@ -154,11 +154,11 @@ as a function of $n$.
     \begin{center}
         $a$ = 1, $b$ = 2, $d$ = 0
     \end{center}  
-    Using case \#2, I get $f(n) = \mathcal{O}(n^{\log_ba})$. We can then say that $T(n) = \mathcal{O}(n^{\log_ba}\log n)$. Plugging in the above values, I get:
+    Using case \#2, I get $f(n) = \mathcal{O}(n^{\log_ba})$. We can then say that $T(n) \leq \mathcal{O}(n^{\log_ba}\log n)$. Plugging in the above values, I get:
     \begin{align*}
-        T(n) & = \mathcal{O}(n^{\log_21}\log n) \\[0.7em]
-        & = \mathcal{O}(n^{0}\log n) \\[0.7em]
-        & = \mathcal{O}(\log n)
+        T(n) & \leq \mathcal{O}(n^{\log_21}\log n) \\[0.7em]
+        & \leq \mathcal{O}(n^{0}\log n) \\[0.7em]
+        & \leq \mathcal{O}(\log n)
     \end{align*}
     Therefore, we can conclude, through the Master's Theorem, that the worst case runtime of my algorithm is $\mathcal{O}(\log n)$.
 \end{solution}
@@ -259,11 +259,68 @@ Collaborators: None%write the name of the collaborators. If you worked by yourse
 Clearly describe your algorithm, prove that it is correct, and analyze its running time. 
 For full credit, the running time should be $O(n \lg n)$. 
 \begin{algorithm}
-%write your solution here
+    \item 
+    \begin{algorithmic}[1]
+        \Procedure{FraudulentCards}{$\mathcal{A}$} \Comment{$\mathcal{A}$ is the array of cards}
+        \If{$len(\mathcal{A}) = 1$}
+            \State \textbf{return} $\mathcal{A}[0]$
+        \EndIf
+        \State $firstHalf \gets \mathcal{A}[0\dots \frac{len(\mathcal{A})}{2}]$
+        \State $secondHalf \gets \mathcal{A}[\frac{len(\mathcal{A})+1}{2}\dots len(\mathcal{A})]$
+        \If{$firstHalf \neq NULL$}
+            \State $counter \gets 0$
+            \For{card in $\mathcal{A}$}
+                \If{card = $firstHalf$}
+                    \State $counter ++$
+                \EndIf
+            \EndFor
+            \If{$counter > \frac{len(\mathcal{A})}{2}$}
+                \State \textbf{return} card
+            \EndIf
+        \EndIf
+        \If{$secondHalf \neq NULL$}
+            \State $counter \gets 0$
+            \For{card in $\mathcal{A}$}
+                \If{card = $secondHalf$}
+                    \State $counter ++$
+                \EndIf
+            \EndFor
+            \If{$counter > \frac{len(\mathcal{A})}{2}$}
+                \State \textbf{return} card
+            \EndIf
+        \EndIf
+        \State \textbf{return} None
+        \EndProcedure
+    \end{algorithmic}
+    I will recursively call on the first and second half of the card set. If there is anything returned from the function call, we will iterate 
+    through the set of cards and if there are matches greater than $\frac{n}{2}$ then we will return that Card as fraudulent.
 \end{algorithm}
 \newpage
 \begin{proofoc}
-%write your solution here
+    \item 
+    \textbf{\textit{Base Case: }}$n=1$ \\ 
+    When the set of cards is equal to one, it will return that card and since it is greater than $\frac{n}{2}$ it is a card from the single account.\\[0.7em]
+    \textbf{\textit{Inductive Hypothesis:}} Assume algorithm works from $1 \rightarrow k$\\[0.7em]
+    \textbf{\textit{Inductive Step: }}Prove it works for set of cards $k+1$ \\
+    The algorithm would run and find all cards that are either fraudulent or from the same account through the inductive hypothesis. They will continue to split 
+    into $\frac{k}{2}$ subsets until it eventually return a single card and iterates through the set of cards to find a match. If we add another card to the set $\mathcal{A}$,
+    the algorithm would return that card and iterate through $\mathcal{A}$ to count how many other cards are the same. Therefore, our algorithm works for $1 \rightarrow k+1$ elements. \\[1em]
+    \textbf{\textit{Runtime Analysis: }}Since the algorithm recursively calls on $\frac{n}{2}$ subsets of the array for a depth $k$, we get an initial recurrence relation of $T(n) = T(\frac{n}{2})$. Since it 
+    does it for the two halves, we multiply it by 2. We also iterate through the set twice every recursive call. Our final recurrence relation is the following: 
+    \begin{center}
+        $T(n) \leq 2T(g)\frac{n}{2} + 2n$
+    \end{center}
+    Again, we use coefficients $a = 2$, $b =2$, and $d=0$. Our $f(n) = \mathcal{O}(n^{\log_ba})$. Our recurrence relation would become:
+    \begin{align*}
+        T(n) \leq \mathcal{O}(n^{\log_ba}\log n)
+    \end{align*} 
+    After plugging in our equation, we get: 
+    \begin{align*}
+        T(n) & \leq \mathcal{O}(n^{\log_22}\log n) \\
+        & \leq \mathcal{O}(n^1\log n) \\
+        & \leq \mathcal{O}(n\log n)
+    \end{align*} 
+    Therefore, in the worst case, our algoritm would take $\mathcal{O}(n \log n)$
 \end{proofoc}
 \newpage
 %%%%%%%%%%%%%%%end of question
@@ -306,11 +363,49 @@ book-keeping needed to record the particular solution found by your divide and c
 Continued on next page.
 \newpage
 \begin{algorithm}
-%write your solution here
+    \item
+    \begin{algorithmic}[1]
+        \Procedure{Tiling}{$n$, $p$} \Comment{$n$ number of tiles, $p$ is missing cell}
+        \If{$n$ = 2} \Comment{Base Case}
+            \State Place tile around air vent
+        \EndIf
+        \State Place Tile in the center, but in such a way that it is not inside the $\frac{n}{2} \times \frac{n}{2}$ square that contains air vent 
+        \State \Call{Tiling}{$\frac{n}{2}, p$}
+        \State \Call{Tiling}{$\frac{n}{2}, p$}
+        \State \Call{Tiling}{$\frac{n}{2}, p$}
+        \State \Call{Tiling}{$\frac{n}{2}, p$}
+        \EndProcedure
+    \end{algorithmic}
 \end{algorithm}   
 \newpage
 \begin{proofoc}
-%Write your solution here
+    \item
+    \textbf{\textit{Base Case: }}$n=2$ \\
+    When we have a $2 \times 2$ square, we can simply place the L-shaped tile around the air vent covering the entire $2 \times 2$ square.\\[0.7em]
+    \textbf{\textit{Inductive Hypothesis: }}We will assume that this algorithm works for $2^k \times 2^k$ squares given that $k \geq 1$. \\[0.7em]
+    \textbf{\textit{Inductive Step: }}I will try to prove that this algorithm works for a square of size $2^{k+1} \times 2^{k+1}$. When our algorithm begins, we place an L-shaped tile 
+    in the middle of the $2^{k+1} \times 2^{k+1}$ square. When we begin our recursive calls, our first call we attempt to tile a $\frac{2^{k+1}}{2} \times \frac{2^{k+1}}{2}$ square.
+    Mathematically, we know that:
+    \begin{align*}
+        \frac{2^{k+1}}{2} \times \frac{2^{k+1}}{2} & = \frac{2^k\times 2}{2} \times \frac{2^k\times 2}{2} \\
+        & = 2^k \times 2^k
+    \end{align*}
+    Through our \textit{Inductive Hypothesis}, we can tile a $2^k \times 2^k$ square. Therfore, our induction is complete and we can conclude that our algorithm is correct. \\[1em]
+    \textbf{\textit{Runtime Analysis: }}The algorithm recursively calls itself 4 times on $\frac{n}{2}$ sized squares each time, where $n$ is the dimension of the entire square, $2^k$. Our recurrence relation is then: 
+    \begin{align*}
+        T(n) = 4T(\frac{n}{2}) + \mathcal{O}(1)
+    \end{align*}
+    We add a constant because of the initial two comparisons that is done at the beginning of the algorithm that takes constant time. I will use Master's Theorem once again to show the runtime of 
+    this algorithm. I will use coefficients $a=4$, $b=2$. I will also use case \#1:  
+    \begin{align*}
+        f(n) &= \mathcal{O}(n^{\log_ba}) \\
+        T(n) & \leq \mathcal{O}(n^{\log_ba}) \\
+        & \leq \mathcal{O}(n^{\log_24}) \\
+        & \leq \mathcal{O}(n^2)
+    \end{align*}
+    We can conclude from Master's Theorem that this algorithm runs in $\mathcal{O}(n^2)$; however, I said that $n$ was equivalent to $2^k$, which is the dimension of the square. 
+    This means that if we plug in my value for n, we get that the runtime is $\mathcal{O}((2^k)^2)$ or $\mathcal{O}(2^{2k})$. I can set $n = 2^2k$ since the total number of 
+    tiles that we look at is $2^k \times 2^k = (2^k)^2$. Therefore, our algorithm runs in $\mathcal{O}(n)$. 
 \end{proofoc}
 \newpage
 \end{enumerate}
