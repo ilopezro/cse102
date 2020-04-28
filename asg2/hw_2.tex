@@ -204,11 +204,35 @@ in the array,  but it will probably not be as efficient as simply performing bin
 Continued on the next page.
 \newpage
 \begin{algorithm}
-%write your solution here
+    \item 
+    \begin{algorithmic}[1]
+        \Procedure{TwoDSearch}{$\mathcal{A}$, $k$} \Comment{$\mathcal{A}$ - array, $k$ - element to find}
+        \State $row \gets 0$
+        \State $column \gets len(\mathcal{A})-1$
+        \While{$row \leq len(\mathcal{A})$ or $column \geq 0$}
+            \If{$\mathcal{A}[row][column] = k$}
+                \State \textbf{return} True
+            \ElsIf{$\mathcal{A}[row][column] < k$}
+                \State $row$ ++
+            \Else 
+                \State $column$ ++
+            \EndIf
+        \EndWhile
+        \State \textbf{return} False
+        \EndProcedure
+    \end{algorithmic}
 \end{algorithm}
 \newpage
 \begin{proofoc}
-%write your solution here
+    \item 
+    \textbf{\textit{Loop Invariant:} }Element $k$ is contained within the submatrix whose top right corner is $(row, column)$ only if $k$ can be found within the matrix. \\[0.7em]
+    \textbf{\textit{Base Case: }}$n=1$\\
+    If we have a $1\times1$ matrix that contains the element 1 and we try and find element 1 in that matrix, our loop invariant holds true because 
+    the top right corner of our $1 \times 1$ matrix holds the element we are looking for. \\[0.7em]
+    \textbf{\textit{Inductive Step: }} \\
+    Assume that our loop invariant holds true from $1 \rightarrow n$. We want to prove that it also holds true for $n+1$. 
+    
+
 \end{proofoc}
 \newpage
 
