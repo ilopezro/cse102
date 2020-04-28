@@ -215,7 +215,7 @@ Continued on the next page.
             \ElsIf{$\mathcal{A}[row][column] < k$}
                 \State $row$ ++
             \Else 
-                \State $column$ ++
+                \State $column --$
             \EndIf
         \EndWhile
         \State \textbf{return} False
@@ -225,22 +225,31 @@ Continued on the next page.
 \newpage
 \begin{proofoc}
     \item 
-    \textbf{\textit{Loop Invariant:} }Element $k$ is contained within the submatrix whose top right corner is $(row, column)$ only if $k$ can be found within the matrix. \\[0.7em]
+    \textbf{\textit{Loop Invariant:} }Element $k$ is contained within the submatrix whose top right corner is $(row, col)$ only if $k$ exists in the matrix. \\[0.7em]
     \textbf{\textit{Base Case: }}$n=1$\\
     If we have a $1\times1$ matrix that contains the element 1 and we try and find element 1 in that matrix, our loop invariant holds true because 
     the top right corner of our $1 \times 1$ matrix holds the element we are looking for. \\[0.7em]
-    \textbf{\textit{Inductive Step: }} \\
-    Assume that our loop invariant holds true from $1 \rightarrow n$. We want to prove that it also holds true for $n+1$. 
-    
+    \textbf{\textit{Inductive Hypothesis: }}Assume that our loop invariant holds true from $1 \rightarrow n$.\\[0.7em]
+    \textbf{\textit{Inductive Step: }}We want to prove that it also holds true for $n+1$.\\
+    For an $n \times n$ matrix: \\
+    If element $k > \mathcal{A}[row][col]$ we know that all the elements within that row are also less than $k$, so we have to move 
+    down a row to try and search for that item. Because we move down a row, our loop invariant still holds true because the element is still within the submatrix whose topright corner is now 
+    $(row+1, col)$. \\[0.7em]
+    Second case is if $k < \mathcal{A}[row][col]$. With this case, we know that all the elements in that specific $col$ are way too big for element $k$. Therefore, we'd have to move a column down to 
+    try and find element $k$. Our loop invariant still holds true for this case because if our element is within our matrix, it is for certain that submatrix $\mathcal{A}[row][col-1]$ contains that element. \\[0.7em]
+    Since we know that our loop invariant holds true up until $n$ for an $n \times n$ matrix, if we add another column and row, our loop invariant would still hold since element $k$ 
+    would still be within submatrix whose top right corner is $(row, col)$. \\
 
+    \textbf{\textbf{Runtime Analysis: }}The runtime of the algorithm is $\mathcal{O}(n)$. In its worst case, when the element you're looking for is at the bottom left corner, it has to traverse across 
+    $n$ times and down another $n-1$ times. The total runtime would be $\mathcal{O}(n + n - 1) = \mathcal{O}(2n-1) = \mathcal{O}(n)$. 
 \end{proofoc}
 \newpage
 
 %Complete the following.
-\emph{I have read and agree to the collaboration policy.}  -- FirstName LastName, email@ucsc.edu
+\emph{I have read and agree to the collaboration policy.}  -- Isai Lopez Rodas, ilopezro@ucsc.edu
 % replacing "FirstName LastName, email@ucsc.edu" with your information.
 \\
-Collaborators: %write the name of the collaborators. If you worked by yourself, please write 'none'.
+Collaborators: None%write the name of the collaborators. If you worked by yourself, please write 'none'.
 \\
 \hrule
 \item Problem 3 in Chapter 5 (Divide and Conquer).  This is the equivalent back card problem: determine if \emph{more than} half the $n$ possible fraudulent bank cards are from the same account using a machine that detects if two cards are from the same account or not.   If this doesn't sound like Problem 3 in Chapter 5 of your version of the text, then let us know.
@@ -259,7 +268,7 @@ For full credit, the running time should be $O(n \lg n)$.
 \newpage
 %%%%%%%%%%%%%%%end of question
 %Complete the following.
-\emph{I have read and agree to the collaboration policy.}  -- FirstName LastName, email@ucsc.edu
+\emph{I have read and agree to the collaboration policy.}  -- Isai Lopez Rodas, ilopezro@ucsc.edu
 % replacing "FirstName LastName, email@ucsc.edu" with your information.
 \\
 Collaborators: %write the name of the collaborators. If you worked by yourself, please write 'none'.
