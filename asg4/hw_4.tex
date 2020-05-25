@@ -49,10 +49,10 @@ Before you begin the assignment, please read the following carefully.
     \item You are \textbf{not} allowed to work in teams.
 \end{itemize}
 %Complete the following.
-\emph{I have read and agree to the collaboration policy.}  -- FirstName LastName, email@ucsc.edu
+\emph{I have read and agree to the collaboration policy.}  -- Isai Lopez Rodas, ilopezro@ucsc.edu
 % replacing "FirstName LastName, email@ucsc.edu" with your information.
 \\
-Collaborators: %write the name of the collaborators. If you worked by yourself, please write 'none'.
+Collaborators: None %write the name of the collaborators. If you worked by yourself, please write 'none'.
 \\
 \hrule
 \begin{enumerate}
@@ -69,8 +69,9 @@ For two nodes $B(2) = 2$ (either node can be the root, and there is only one bin
 \begin{enumerate}
 \item (1 pt) Calculate by hand $B(3)$.
 \begin{solution}
- 
- 
+    \item The root node can have any random node at its root. Therefore, that leaves us with 2 nodes to pick from and put them in any given order either on the left node or the right node 
+          of the tree. This means that for each side we can have 2C1 (2 choose 1 combination) for each side of the tree, we can do this. 2C1 resolves to 2, which means that on each side of the 
+          tree, we have 2 possible combinations. Since we already have one at the root, this will be a total of 2+1+2 = 5. Therefore, B(3) = 5. 
 \end{solution}
  \newpage
 \item (1 pt) How many $n = 6$ key binary trees are there with keys $\{1,2,3,4,5,6\}$ and key 3 at the root 
