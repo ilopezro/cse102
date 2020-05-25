@@ -16,9 +16,9 @@
 
 \begin{document}
 % PUT YOUR INFORMATION IN THESE TWO LINES 
-\hfill FirstName  LastName  
+\hfill Isai  Lopez Rodas  
 
-\hfill StudentID  acct@ucsc.edu
+\hfill 1605542  ilopezro@ucsc.edu
 
 \begin{center}
 {\bf\Large 
@@ -55,10 +55,10 @@ Before you begin the assignment, please read the following carefully.
     \item You are \textbf{not} allowed to work in teams.
 \end{itemize}
 %Complete the following.
-\emph{I have read and agree to the collaboration policy.}  -- FirstName LastName, email@ucsc.edu
+\emph{I have read and agree to the collaboration policy.}  -- Isai Lopez Rodas, ilopezro@ucsc.edu
 % replacing "FirstName LastName, email@ucsc.edu" with your information.
 \\
-Collaborators: %write the name of the collaborators. If you worked by yourself, please write 'none'.
+Collaborators: None%write the name of the collaborators. If you worked by yourself, please write 'none'.
 \\
 \hrule
 \begin{enumerate}
@@ -71,17 +71,19 @@ Collaborators: %write the name of the collaborators. If you worked by yourself, 
 \begin{solution}
 Problem 2.
 \begin{itemize}
-    \item %answer first question here
-    
-     \item %answer second question here
+    \item This would be \textbf{true} because Kruskal's Algorithm would sort them in the same exact way, but the subsets of the edges in the MST would be the same because this algorithm 
+    only takes a look at the order of the costs rather than the actual given values. 
+     \item This would be \textbf{false} because if we were given edges in a given graph with edges $(s,v)$, $(v,t)$, and $(s,t)$ with values 2, 5, and 6 then we know that $(s,t)$ is the shortest
+	 path because it has value 6; however, if we were to square the values of each edge we would have the following values: $(s,v)$, $(v,t)$, and $(s,t)$ with values 4, 25, and 36. Now, the shortest path
+	would be $(s,v)$ and $(v,t)$ with a value of 29. 
 \end{itemize}
 \end{solution}
 \newpage
 %Complete the following.
-\emph{I have read and agree to the collaboration policy.}  -- FirstName LastName, email@ucsc.edu
+\emph{I have read and agree to the collaboration policy.}  -- Isai Lopez Rodas, ilopezro@ucsc.edu
 % replacing "FirstName LastName, email@ucsc.edu" with your information.
 \\
-Collaborators: %write the name of the collaborators. If you worked by yourself, please write 'none'.
+Collaborators: None%write the name of the collaborators. If you worked by yourself, please write 'none'.
 \\
 \hrule
 \item (3 + 5 + 5 + 2 = 15 pts). 
@@ -114,31 +116,77 @@ Your efficient {\bf greedy} algorithm should take as input a list of pairs of ti
 	Give an example showing that this algorithm does \textbf{not}
 	always find the smallest set of nurses.
 	\begin{solution}
-	
+	\item This algorithm is not the most efficient because it does not choose the smallest set of available nurses. If we have three nurses with the following 
+	schedules:
+	\begin{itemize}
+		\item Nurse 1: 0-24
+		\item Nurse 2: 10-45
+		\item Nurse 3: 24-48
+	\end{itemize}
+	The algorithm will choose nurse 2 first since it has the longest available schedule. Nurse 2 is able to cover 35 hours while nurse 1 and 2 can only cover 24 hours. 
+	This is a problem because you need someone to cover the first 10 hours and the last 3 hours. Therefore the algorithm will \textbf{HAVE} to schedule nurses 1 and 2. Therefore
+	the algorithm has chosen all three nurses when there is a more optimal solution, which is to choose nurses 1 and 3 to cover the shifts. Therefore, this algorithm is not correct. 
 	\end{solution}
 	\newpage
 	\item Present an algorithm that always outputs a smallest subset of nurses that can cover the entire 48 hours 
 	or report that no such subset exists.
 	\begin{solution}
-	
+		\item 
+		\begin{enumerate}
+			\item For all $a_i$, sort in ascending order. 
+			\begin{enumerate}
+				\item If there are two nurses who have the same $a_i$, sort $b_i$ in decending order. 
+			\end{enumerate}
+			\item After this sorting is done, we not have a list of nurses and their schedules where nurse 1 is (ideally) supposed to start off at the 0$^{th}$ hour. 
+			\item If $a_0 > 0$, there is no solution. 
+			\item Else if $a_0 = 0$, then the first scheduled nurse is $(a_0, b_0)$
+			\item Starting at $i=1$, look for a $a_i$ that fits the following inequality: $a_i \leq b_0$. Once you find a nurse that fits the following, you are 
+			guaranteed to have a nurse$_1$ either start before or when nurse$_0$ ends. We will keep a counter for the index $x$ where $b_x$ is the biggest. 
+			\begin{enumerate}
+				\item If you've got a situation when $a_1 > b_0$, you have no solution because that means that no nurse is able to start when nurse$_0$'s shift ends. 
+				\item After an iteration finds such an $a_i > b_1$, we set a variable $y = i$. 
+			\end{enumerate}
+			\item The next nurse that can cover the next shift then becomes: $(a_y, b_y)$
+			\item Next loop would start at $i=y$. Line $v, v.A,$ and $v.B$ would be repeated as neccesary. 
+			\item Iteration of this loop would end when $b_i$ = 48. 
+		\end{enumerate}
 	\end{solution}
 	\newpage
 	\item Prove that your algorithm is correct (i.e.\ alway finds a smallest possible subset of the nurses the cover the entire stay).
 	\begin{solution}
-	
+	\item 
+	We will begin with assuming we have a solution, $s_1$, produced by the algorithm above. 
+	\\[1em]
+	\textbf{\textit{Base Case:}} Another solution exists besides the one provided by $s_1$
+	\\
+	Therefore we know that $a_0 = 0$ is true because there must exist a nurse that covers that first hour. We also know that the $b_1 \geq b_i$. Therefor if we replace
+	$(a_i, b_i)$ with $(a_1, b_1)$, we still have a valid solution, thus the greedy choice applies in this case. 
+	\\[1em]
+	\textbf{\textit{Inductive Step:}} Assume there is another different solution that starts with $(a_i, b_i)$. Therefore, we want to prove that:
+	\begin{center}
+		$a_i = a_0, b_i = b_0, a_{i+1} = a_y, b_{i+1}=b_y, \cdots, a_{i+j} = a_{y+j}, b_{i+j}=b_{y+j}$
+	\end{center}
+	where 
+	\begin{center}
+		$b_{y+j} > b_{y+j+1}$
+	\end{center}
+	To satisfy the fact that there must be a valid nurse that can start at the scheduled end time for the previous nurse. The greedy algorithm will find the a value for $b_{y+j}$ while 
+	acknowledging inequality: $a_{i+j} \leq b_{i+y+1}$. Therefore we can replace $(a_i, b_i)$ with $(a_{i+j}, b_{i+j})$. Which procudes a valid solution according to the greedy choice application.
+	Therefore, the algorithm is correct. 
 	\end{solution}
 	\newpage
 	\item State its running time with a brief one-to-three sentence justification. 
 	\begin{solution}
-	
+	Because we are sorting the nurses at the beginning of the algorithm, the sorting takes $\mathcal{O}(n\log n)$ time. The comparisons in the middle are only made once 
+	per element, which then produces an $\mathcal{O}(n)$ runningtime for the comparisons. Therefore, the total runningtime of the algorithm is $\mathcal{O}(n\log n)$. 
 	\end{solution}
 	\newpage
 \end{enumerate}
 %Complete the following.
-\emph{I have read and agree to the collaboration policy.}  -- FirstName LastName, email@ucsc.edu
+\emph{I have read and agree to the collaboration policy.}  -- Isai Lopez Rodas, ilopezro@ucsc.edu
 % replacing "FirstName LastName, email@ucsc.edu" with your information.
 \\
-Collaborators: %write the name of the collaborators. If you worked by yourself, please write 'none'.
+Collaborators: None %write the name of the collaborators. If you worked by yourself, please write 'none'.
 \\
 \hrule
 \item (15 pts) A first grade teacher has a set of $n$ books, say $\{1, 2, \ldots, n\}$, stored on a bookshelf in the classroom.
@@ -170,10 +218,10 @@ determines an order $s_1, s_2, \ldots , s_n$ for storing the books on the shelf 
 \newpage
 
 %Complete the following.
-\emph{I have read and agree to the collaboration policy.}  -- FirstName LastName, email@ucsc.edu
+\emph{I have read and agree to the collaboration policy.}  -- Isai Lopez, ilopezro@ucsc.edu
 % replacing "FirstName LastName, email@ucsc.edu" with your information.
 \\
-Collaborators: %write the name of the collaborators. If you worked by yourself, please write 'none'.
+Collaborators: None %write the name of the collaborators. If you worked by yourself, please write 'none'.
 \\
 \hrule
 \item (15 pts)  Is it a break-in?
@@ -211,16 +259,31 @@ the events in $E$ match those in $H$.
 \newpage
 %Answer beings on a new page.
 \begin{algo}
-
-
+	\item
+	\begin{algorithmic}[1]
+		\Procedure{isBreakIn}{$E, H$}
+		\State $lenE \leftarrow len(E)$
+		\State $lenH \leftarrow len(H)$
+		\State $counter \leftarrow 0$
+		\State for (i = 0); i$<$lenE and counter $<$ lenH; i++
+		\State if(E[i] = H[counter]) 
+		\State counter++;
+		\State if (counter = i )
+		\State return i
+		\State return -1
+		\EndProcedure
+	\end{algorithmic}
 \end{algo}
 \newpage
 \begin{proofcorr}
-
+	\item
+When we have a sequence of evenets $E_1$ that is also in $H$ the algorithm selects the first event in $E_1$ that matches with $E_1$. It will 
+then proceed to that with subevent $e_2 \cdots e_i$. After, our algorithm will return the index in which $E$ is a subsequence of $H$. Therefore, 
+our algorithm's greedy choice is the optimal solution. 
 \end{proofcorr}
 \newpage
 \begin{analysis}
-
+In the worst case scenario, our algorithm will have to go through all events in $E$, which means that it has to run a total time of $\mathcal{O}(n)$.
 \end{analysis}
 \newpage
 
