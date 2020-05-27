@@ -69,15 +69,16 @@ For two nodes $B(2) = 2$ (either node can be the root, and there is only one bin
 \begin{enumerate}
 \item (1 pt) Calculate by hand $B(3)$.
 \begin{solution}
-    \item The root node can have any random node at its root. Therefore, that leaves us with 2 nodes to pick from and put them in any given order either on the left node or the right node 
-          of the tree. This means that for each side we can have 2C1 (2 choose 1 combination) for each side of the tree, we can do this. 2C1 resolves to 2, which means that on each side of the 
-          tree, we have 2 possible combinations. Since we already have one at the root, this will be a total of 2+1+2 = 5. Therefore, B(3) = 5. 
+    \item When the root is 1, there are two different trees that can be made. You can insert 1, 3, 2 OR 1, 2, 3 and it will create 2 seperate trees. When the root is 2, there is only one possible tree than can 
+          be made. The inserts can happen 2, 1, 3 OR  1, 3, 1. However, since the 3 $>$ 1, 1 will always be inserted to the left and 3 will always be inserted to the right regardless of the order they come in. When 
+          the root is 3, there are 2 possible trees that can be made. The inserts can happen: 3, 1, 2 OR 3, 2, 1. This would create two seperate trees. Therefore the total number of possibilites is equal to 2 + 1 + 2 = 5 = B(3). 
 \end{solution}
  \newpage
 \item (1 pt) How many $n = 6$ key binary trees are there with keys $\{1,2,3,4,5,6\}$ and key 3 at the root 
 (so the left subtree has two nodes, and the right one has 3 nodes) are there?
 \begin{solution}
-
+    \item Since the root of the tree is going to be key 3, there are 2 nodes on the left and 3 nodes on the right. Given what we know from the problem and what we found out in part $(a)$, we know that B(3) = 5 and B(2) = 2. Since the left subtree 
+          has 2 possible nodes and the right subtree has 3 possible subtrees, we can multiply $B(2) \times B(3)$ to find the total possibilies, which is 10.   
 \end{solution}
 \newpage
 \item (4 pts) Construct a recurrence for $B(n)$, I expect something with a sum.
@@ -85,22 +86,54 @@ Include boundary conditions in your recurrence; what is a convenient boundary va
 Briefly justify (formal proof not required) that your recurrence computes the correct value.
 
 \begin{solution}
-
+    \item Going back to the example brought up in part (c), in order to find a recurrence I will walk through the problem of finding B(4). 
+          I will start by finding the possible trees for B(4): 
+          \begin{enumerate}
+              \item When the root is 1: That means that the right side of the tree will be populated by 3 
+              randomly inserted nodes. We know that \textbf{B(3) = 5}.  
+              \item When the root is 2: The right side will only be able to fit one node 1 = B(1). The right side will have to randomly insert 2 nodes or B(2). Since those are the only possibilities, we
+                    can multiply them together, thus \textbf{B(2) $\times$ B(1) = 2}. 
+              \item When root is 3: The right side will only be able to fit one node: 1 = B(1). The left subtree has to randomly insert 2 nodes, which means again that the total possibilites for this is \textbf{B(2) $\times$ B(1) = 2}.
+              \item When root is 4: We have to randomly insert 3 nodes on the left subtree since all nodes are smaller than 4. Therfore there are \textbf{B(3) = 5} total possibilites. 
+          \end{enumerate} 
+          When we add up all the numbers in bold, we get that total number of binary trees for B(4) = 5 + 2 + 2+ 5 = 14. \\[0.7em]
+          I saw a pattern here. At the edges when root node is 1 or $n$, you multiply $B(0) \times B(n-1)$. In this case, I made $B(0) = 1$ since there is an empty tree when there are no nodes. The middle nodes are calculated by
+          multiplying $B(n-i) \times B(i-1)$. At the end of calculating these values, we sum everything up. Therefore I came up with the following summation 
+          for the recurrence of $B(n)$:
+          \begin{equation*}
+              B(n) = \sum_{i=1}^{n}B(n-i) \times B(i-1)
+          \end{equation*}
 \end{solution}
 \newpage
 \item (3 pts) Give an iterative (bottom up) algorithm based on the recurrence that computes $B(n)$ by filling in a table.
 It may help to first create a recursive function with memoization from your recurrence above.
 \begin{solution}
-
+    \item I will store all keys inside a dictionary. The lookup for a key is $\mathcal{O}(1)$ and we can dynamically allocate memory to the dictionary. The dictionary \textnormal{dict} is a global variable.
+          I will also store the initial keys 0, 1, and 2 inside the dictionary and set their values = 1. 
+    \begin{algorithmic}
+        \Procedure{FindTotalTrees}{n} \Comment n is the key 
+            \If{dict[n] exists} \Comment Check to see if key $n$ is already in dictionary
+                \State \textbf{return} dict[n] \Comment will return value of $n$ if already calculated
+            \EndIf
+            \State sum $\leftarrow$ 0
+            \For{$ i = 0 \rightarrow n$ }
+                \State num1 $\leftarrow$ FindTotalTrees(n-1)
+                \State num2 $\leftarrow$ FindTotalTrees(n-i)
+                \State sum +=( num1 $\times$ num2 )
+            \EndFor
+            \State dict[n] $\leftarrow$ sum \Comment setting n = sum in dictionary before returning to memoize
+            \State \textbf{return} sum
+        \EndProcedure
+    \end{algorithmic}
 \end{solution}
 \newpage
 
 
 \item (1 pt) What is the running time of your iterative algorithm as a function of $n$ (use asymptotic notation)?
 \end{enumerate}
- 
 \begin{solution}
-
+    \item In the worst case that $n$ has not been calculated yet, the algorithm has to run $\mathcal{O}(n^2)$. It has to run the entire $i=1 \rightarrow n$ and recursively call for each part of the 
+          summation. 
 \end{solution}
 \newpage
 \item (8  pts) Assume that you have a list of $n$ home maintenance/repair tasks (numbered from 1 to $n$) that must be done \emph{in numeric order} on your house.  
