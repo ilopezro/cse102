@@ -1,5 +1,5 @@
 \documentclass[11pt]{article}
-\usepackage{fullpage,amsthm,amsfonts,amssymb,epsfig,amsmath,times,amsthm}
+\usepackage{fullpage,amsthm,amsfonts,amssymb,epsfig,amsmath,times,amsthm, hyperref}
 \usepackage{algpseudocode}
 \usepackage{tikz}
 \usepackage{ulem}
@@ -7,6 +7,13 @@
 \newtheorem{theorem}{Theorem}
 \newtheorem{claim}[theorem]{Claim}
 \newtheorem*{solution}{Solution}
+\hypersetup{
+    colorlinks,
+    citecolor=black,
+    filecolor=black,
+    linkcolor=black,
+    urlcolor=black
+}
 
 \begin{document}
 % PUT YOUR INFORMATION IN THESE TWO LINES 
@@ -109,20 +116,37 @@ Briefly justify (formal proof not required) that your recurrence computes the co
 It may help to first create a recursive function with memoization from your recurrence above.
 \begin{solution}
     \item I will store all keys inside a dictionary. The lookup for a key is $\mathcal{O}(1)$ and we can dynamically allocate memory to the dictionary. The dictionary \textnormal{dict} is a global variable.
-          I will also store the initial keys 0, 1, and 2 inside the dictionary and set their values = 1. 
+          I will also store the initial keys 0 and 1 inside the dictionary and set their values = 1. 
     \begin{algorithmic}
-        \Procedure{FindTotalTrees}{n} \Comment n is the key 
+        \Procedure{FindTotalTreesRec}{n} \Comment n is the key 
             \If{dict[n] exists} \Comment Check to see if key $n$ is already in dictionary
                 \State \textbf{return} dict[n] \Comment will return value of $n$ if already calculated
             \EndIf
             \State sum $\leftarrow$ 0
-            \For{$ i = 0 \rightarrow n$ }
+            \For{$ i = 1 \rightarrow n$ }
                 \State num1 $\leftarrow$ FindTotalTrees(n-1)
                 \State num2 $\leftarrow$ FindTotalTrees(n-i)
                 \State sum +=( num1 $\times$ num2 )
             \EndFor
             \State dict[n] $\leftarrow$ sum \Comment setting n = sum in dictionary before returning to memoize
             \State \textbf{return} sum
+        \EndProcedure
+    \end{algorithmic}
+    This is my recursive approach to the problem. Below, I will implement an iterative bottom up solution. Instead of using a global dictionary, I will not use a dictionary that is only defined
+    within the scope of the function \textnormal{FindTotalTreesIter()}. I will still initialize keys 0 and 1 to the values of 1. I chose a dictionary because you can dynamically allocate memory instead of 
+    worrying about not creating a big enough array. 
+    \begin{algorithmic}
+        \Procedure{FindTotalTreesIter}{n} \Comment n is the key 
+            \State dict $\leftarrow$ \{0:1, 1:1\}
+            \If{$n < 2$}
+                \State \textbf{return} 1
+            \EndIf
+            \For{$ i = 2 \rightarrow n$ }
+                \For{$j = 0 \rightarrow i$}
+                    \State dict[i] += dict[j] * dict[i-j-1]
+                \EndFor
+            \EndFor
+            \State \textbf{return} dict[n]
         \EndProcedure
     \end{algorithmic}
 \end{solution}
@@ -146,25 +170,81 @@ The inputs to the problem are $h$ and the array of costs $c[1], \ldots, c[n]$.
 \begin{enumerate}
 \item (3 pts) First, find and justify a recurrence (with boundary conditions) giving the the optimal cost for completing the tasks.  Use $M(j)$ for the minimum cost required to do the first $j$ tasks.
 \begin{solution}
-
+    \item 
+    \begin{equation*}
+        M(j)=
+        \begin{cases}
+            0 & j = 0 \\
+            \sum_{i=1}^jc[i] & j <= 3 \\
+            \min(c[j-1] + c[j], c[j-4] + h) & otherwise
+        \end{cases}
+    \end{equation*}
+    This recurrence provides the optimal cost because it covers 3 cases assuming that j will always be non negative. 
+    \begin{enumerate}
+        \item When j = 0: it will simply return 0 because there is no work to do 
+        \item When j $<$ 0 $\leq$ 3: in this case, you still cannot hire a handyman so you must do all the work yourself. You have to sum up the amount of work you have to do for the j jobs. 
+        \item When j $\geq$ 4: you look at what the $j-1^{th}$ job cost you and add the current job's cost and find the minimum between that and hiring a handyman, in which case we will calculate how much it cost for the 
+            previous i-4 jobs and add the handyman's fixed price. If you find the minimum between those two costs, you are guaranteed to find the optimal solution to which jobs we should perform or which jobs we should hand off 
+            to the handyman. 
+    \end{enumerate}
 \end{solution}
 \newpage
 \item (2 pts) Give an $O(n)$-time recursive algorithm with memoization for calculating the $M(j)$ values.
 
 \begin{solution}
-
+    \item Assume Costs array is a global variable
+    \begin{algorithmic}
+        \Procedure{FindOptCost}{x} \Comment x is representative of j
+            \State Costs[x] $\leftarrow$ [0] = 0 \Comment arr length x, with index 0 = 0
+            \If{$x = 0$}
+                \State \textbf{return} 0
+            \ElsIf{$x < 4$}
+                \State Costs[x] = c[x] + FindOptCost(x-1)
+                \State \textbf{return} Costs[x]
+            \Else \Comment $x \geq 4$
+                \State Costs[x] = $\min(FindOptCost(x-1) + c[x], FindOptCost(x-4) + h)$
+                \State \textbf{return} Costs[x]
+            \EndIf
+        \EndProcedure
+    \end{algorithmic}
 \end{solution}
 \newpage
 
 \item (1 pt) Give an $O(n)$-time bottom-up algorithm for filling in the array
 \begin{solution}
-
+    \item
+    \begin{algorithmic}
+        \Procedure{FindOptCost}{x} \Comment x is representative of j
+            \State Costs[x] $\leftarrow$ [0] = 0 \Comment arr length x, with index 0 = 0
+            \If{$x = 0$}
+                \State \textbf{return} 0
+            \ElsIf{$x < 4$}
+                \For{$i=1 \rightarrow x$}
+                    \State Costs[i] = Costs[i-1] + c[i]
+                    \State \textbf{return} Costs[x]
+                \EndFor
+            \Else \Comment $x \geq 4$
+                \State Costs[1] $\leftarrow$ c[1]
+                \State Costs[2] $\leftarrow$ c[2]
+                \State Costs[3] $\leftarrow$ c[3]
+                \For{$i=4 \rightarrow x$}
+                    \State Costs[i] = $\min(Costs[i-1] + c[i], Costs[i-4] + h)$
+                \EndFor
+                \State \textbf{return} Costs[x]
+            \EndIf
+        \EndProcedure
+    \end{algorithmic}
 \end{solution}
 \newpage
 
 \item (2 pts) Describe how to determine which tasks to do yourself, and which tasks to hire the handyman for in an optimal solution.
 \begin{solution}
-
+    \item In order to determine which jobs will be done by the handyman and by myself, there should be some sort of dictionary or array that 
+          records the jobs in order that they were chose. For example, in the edge case where number of job is less than 3, the dictionary would be 
+          populated by 1, 2, 3 because that was the order in which the jobs were performed. If they are in increments of one, they are done by me. However, 
+          it gets a little more complicated when the number of jobs is greater than 3. The way I think it would work, is if the array gets populated with what number 
+          job was chosen. So if we have a total of 6 jobs and it was more optimal for me to do the first job, the handyman the next 4, and me the last one. I will put in the array 
+          1, 2, 6. Since $2+1 \neq 6$, we can conclude that I did the first job, handyman did the next 4 jobs, and I did the last job (since 6 = total number of jobs). 
 \end{solution}
 \end{enumerate}
 
@@ -219,14 +299,24 @@ from trading post 1 and returning the last canoe rented at trading post $k$.
 some trading post $j$.  What subproblems are also solved optimally
 by (parts of) this rental sequence?  Prove your answer (probably using a proof by contradiction)
 \begin{solution}
-
+    \item The subproblems being solved is finding the most cost efficient route between the previous trade post i to j and now solving to see which is the most 
+    optimal solution from j to a post k. \\[0.7em]
+    Assuming that j does not choose the next most optimal canoe trading post. \\[0.7em]
+    j has the option to go to next trading post k or $k'$. If the algorithm chooses to take the trading post $k$, the algorithm will continue to iterate until it finishes at the final trade post; 
+    however, this would not be a valid option because the algorithm has to choose the minimum value between trade post $k$ and $k'$. Therefore, we have reached a contradition.   
 \end{solution}
 \newpage
 
 \item (2 pts) Derive a recurrence for $C(k)$
 in terms of $C(j)$ values where $j<k$.
 \begin{solution}
-
+    \item I will develop a similar recurrence as the one found in the lecture slides for the Knapsack problem.           
+    \begin{equation*}
+        C(k) = \begin{cases}
+                    0 & k=1 \\
+                    \min_{j < k}(C(j) + R(j,k)) & otherwise
+               \end{cases}
+    \end{equation*}
 \end{solution}
 \newpage
 
@@ -238,7 +328,23 @@ This algorithm may also compute ``signpost'' values for use in the following par
 For part (c), it may be helpful to first construct a recursive algorithm for
 computing the $C(k)$ values.
 \begin{solution}
-
+    \item 
+    \begin{algorithmic}
+        \Procedure{Cost}{k} \Comment k is target end post
+        \State arrCosts[k+1] \Comment Array used for memoization
+        \State arrCosts[1] = 0 \Comment since R(1,1) = 0
+        \For{$i =2 \rightarrow k$}
+            \State arrCosts[i] = $R(1,i)$ = arrCosts[0] \Comment storing the min value at index 0
+            \For{$j = 1 \rightarrow i-1$}
+                \State currMinCost = arrCosts[j] + $R(j,i)$
+                \If{currMinCost $<$ C[i]}
+                    \State arrCosts[0] = currMinCost \Comment set array at index 0 equal to smallest value
+                \EndIf
+            \EndFor
+        \EndFor
+        \State \textbf{return} arrCosts[0] \Comment this contains the smallest value
+        \EndProcedure    
+    \end{algorithmic}
 \end{solution}
 \newpage
 
@@ -246,7 +352,9 @@ computing the $C(k)$ values.
 Finally, show how keeping a little (i.e.~$O(n)$) additional information allows the
 a cheapest sequence of canoe rentals to be printed out in $O(n)$ time.
 \begin{solution}
-
+    \item The way I handled the printing of the result is by keeping an array of path the canoes must go in order to minimize the cost of the rentals. So if the path must go from 1-2 and 2-4, I added 2 and 4 to the array and 
+        iterate through that array to find the cost AND print the solution. This array takes an additional $\mathcal{O}(n)$ of auxillary space, but it does also allow the algorithm to print out result in the same time because
+        its a single iteration of the array and a $\mathcal{O}(1)$ lookup for the cost. 
 \end{solution}
 \newpage
 \end{enumerate}
